@@ -4,6 +4,12 @@ var bodyParser = require("body-parser");
 const axios = require("axios");
 require('dotenv').config();
 
+// BOT require
+const { Telegraf } = require("telegraf");
+ 
+
+const generateIMG = require('./generateIMG');
+
 app.use(bodyParser.json()) // for parsing application/json
 app.use(
 	bodyParser.urlencoded({
@@ -46,11 +52,55 @@ app.post("/new-message", function (req, res) {
 })
 
 app.get('/',(req,res)=>{
-	res.send("Hello World")
+	res.send("bot code added")
 })
 
 
 // Finally, start our server
 app.listen(process.env.PORT || 3100, function () {
 	console.log("Telegram app listening on port 3100!")
+})
+
+
+// BOT CODE
+
+const token = "5971390987:AAG-OndGJ2FzpT8KjwfvLxq5goLBkmiCvdQ"
+
+const bot = new Telegraf(token)
+
+bot.command("start", async (ctx) => {
+    await ctx.replyWithHTML('Enter Any Text');
+})
+
+bot.on("message", async (ctx) => {
+
+    // await ctx.replyWithHTML("Loading...")
+    // await ctx.replyWithHTML("Loading....").then(async({ message_id  }) => {
+
+    await ctx.reply("⏳").then(async({ message_id  }) => {
+        
+        console.log(ctx.message.message_id + " 30"),
+        console.log(message_id + " 33"),
+        console.log(ctx.chat.id + " 30")
+
+       
+
+
+        
+        
+        
+        const text = ctx.update.message.text
+        const img=await generateIMG.generateImage(text)
+        console.log(img);
+        await ctx.replyWithPhoto({url: img })
+        await ctx.telegram.deleteMessage(ctx.chat.id,message_id);
+        await ctx.replyWithHTML(text)
+
+    }) 
+})
+
+
+
+bot.launch().then(() => {
+    console.log("Bot Started...");
 })
