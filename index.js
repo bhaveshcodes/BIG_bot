@@ -46,7 +46,7 @@ app.post("/new-message", function (req, res) {
 })
 
 app.get('/',(req,res)=>{
-	res.send("Working")
+	res.send("Hello World")
 })
 
 
